@@ -5,11 +5,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const resultDiv = document.getElementById("result");
   const toggleModeBtn = document.getElementById("toggleModeBtn");
 
-  let isRejangMode = false; // Boolean toggle for mode (Rejang vs Normal)
+  let mode = "normal"; // "normal", "rejang", or "aksaraOnly"
 
   const updateDropdown = () => {
     modeSelect.innerHTML = ""; // Reset dropdown options
-    if (isRejangMode) {
+    if (mode === "rejang") {
       modeSelect.innerHTML = `
         <option value="id">Indonesia</option>
         <option value="en">English</option>
@@ -19,7 +19,13 @@ document.addEventListener("DOMContentLoaded", () => {
         <option value="ko">Korean</option>
       `;
       toggleModeBtn.textContent = "Translate from Rejang";
+      modeSelect.classList.remove("hide")
       toggleModeBtn.classList.add("rejang-mode");
+    } else if (mode === "aksaraOnly") {
+      modeSelect.innerHTML = `<option value="aksaraOnly">Aksara Only</option>`;
+      modeSelect.classList.add("hide")
+      toggleModeBtn.textContent = "Show Aksara Only";
+      toggleModeBtn.classList.add("aksara-mode");
     } else {
       modeSelect.innerHTML = `
         <option value="auto">Auto Detect</option>
@@ -30,14 +36,21 @@ document.addEventListener("DOMContentLoaded", () => {
         <option value="ja">Japanese</option>
         <option value="ko">Korean</option>
       `;
+      modeSelect.classList.remove("hide")
       toggleModeBtn.textContent = "Translate to Rejang";
-      toggleModeBtn.classList.remove("rejang-mode");
+      toggleModeBtn.classList.remove("rejang-mode", "aksara-mode");
     }
-    resultDiv.classList.add("hide")
+    resultDiv.classList.add("hide");
   };
 
   toggleModeBtn.addEventListener("click", () => {
-    isRejangMode = !isRejangMode; // Toggle between modes
+    if (mode === "normal") {
+      mode = "rejang";
+    } else if (mode === "rejang") {
+      mode = "aksaraOnly";
+    } else {
+      mode = "normal";
+    }
     updateDropdown();
   });
 
@@ -50,13 +63,25 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       resultDiv.innerHTML = "Translating...";
 
-      const langMode = isRejangMode ? "rejang" : selectedLang; // Switch between Rejang or selected language
-      const endpoint = `https://kamusrejang.vercel.app/api/word/translate/${langMode}?word=${encodeURIComponent(prompt)}&lang=${selectedLang}`;
+      let endpoint;
+      if (mode === "aksaraOnly") {
+        endpoint = `https://kamusrejang.vercel.app/api/word/kaganga?word=${encodeURIComponent(prompt)}`;
+      } else {
+        const langMode = mode === "rejang" ? "rejang" : selectedLang; // Mode switching logic
+        endpoint = `https://kamusrejang.vercel.app/api/word/translate/${langMode}?word=${encodeURIComponent(prompt)}&lang=${selectedLang}`;
+      }
 
       const response = await fetch(endpoint);
       const data = await response.json();
-      resultDiv.innerHTML = data.result ? `${data.result}` : "Translation not found.";
-      resultDiv.classList.remove("hide")
+
+      if (mode === "aksaraOnly") {
+        resultDiv.innerHTML = data ? `<span class="rejang">${data}</span>` : "Aksara not found.";
+      } else {
+        resultDiv.innerHTML = data.result
+          ? `${data.result} <br /> <span class="rejang">${data.aksara}</span>`
+          : "Translation not found.";
+      }
+      resultDiv.classList.remove("hide");
     } catch (error) {
       resultDiv.innerHTML = "Failed to fetch translation.";
     }

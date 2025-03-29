@@ -1,4 +1,9 @@
 /* Base styling */
+@font-face {
+  font-family: 'Bangkahulu';
+  src: url('https://cdn.glitch.global/453b0d20-b8fc-4202-841d-a49bccee5c1e/bangkahulu.ttf?v=1712387792024') format('truetype');
+}
+
 body {
     background-color: #f0f4f8;
     font-family: 'Arial', sans-serif;
@@ -52,6 +57,9 @@ body {
   button:hover {
     background-color: #cb5f5f;
   }
+  .rejang {
+    font-family: 'Bangkahulu';
+  }
   
   /* Toggle button */
   .toggle-btn {
@@ -89,6 +97,7 @@ body {
   .result-box {
     margin-top: 20px;
     padding: 10px;
+    font-size: x-large;
     background-color: #f7f7f7;
     border-radius: 5px;
     border: 1px solid #ddd;
