@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kamus Bahasa Rejang</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="popup.js" defer></script>
+  </head>
+  <body>
+    <div class="container">
+      <img src="logo.png" alt="Logo" />
+      <h2>Rejang Dictionary</h2>
+
+      <button id="toggleModeBtn" class="toggle-btn">Translate from Rejang</button>
+
+      <form id="translateForm" class="form">
+        <input type="text" id="promptInput" placeholder="Enter prompt..." />
+        <select id="modeSelect"></select>
+        <button type="submit">Translate</button>
+      </form>
+
+      <div id="result" class="result-box hide">
+      </div>
+
+      <footer>© 2025, Fathin's Rejang Dictionary Extension</footer>
+    </div>
+  </body>
+</html>
